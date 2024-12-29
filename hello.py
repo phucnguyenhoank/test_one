@@ -1,5 +1,15 @@
-import numpy as np
+#%%
+from dotenv import load_dotenv
+import os
 
-a = np.array([1, 2, 3, 4, 5])
-print(a.n)
 
+# %%
+load_dotenv()
+
+
+# %%
+api_key = os.getenv("WEATHER_API_KEY")
+print(f"API Key: {api_key}")
+
+
+# %%
