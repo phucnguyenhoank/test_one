@@ -40,7 +40,7 @@ scatter_house_price(house_price)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import SGDRegressor
 
 # %%
 # Define feature (X) and target (y)
@@ -58,39 +58,38 @@ X_train_standardized = scaler_X.fit_transform(X_train)
 X_test_standardized = scaler_X.transform(X_test)
 
 scaler_y = StandardScaler()
-y_train_standardized = scaler_y.fit_transform(y_train)
-y_test_standardized = scaler_y.transform(y_test)
-
+y_train_standardized = scaler_y.fit_transform(y_train).ravel()
+y_test_standardized = scaler_y.transform(y_test).ravel()
 
 # %%
-# Create a Linear Regression model
-model = LinearRegression()
-
-# Train the model on the training data
+# Create and train the model
+model = SGDRegressor(loss='squared_error', max_iter=6000)
 model.fit(X_train_standardized, y_train_standardized)
 
-# %%
-# Make predictions on the test data
-y_pred_standardized = model.predict(X_test_standardized)
 
 # %%
 # Evaluate the model
+# Make predictions on the test data
+y_pred_standardized = model.predict(X_test_standardized)
 mse = mean_squared_error(y_test_standardized, y_pred_standardized)
-print(f"Mean Squared Error: {mse}")
+
+print(f"Final Mean Squared Error (on test data): {mse}")
+
 
 # %%
-# Plotting the results
-y_pred = scaler_y.inverse_transform(y_pred_standardized)
-plt.scatter(X_test, y_test, color='blue', label='Actual Prices')
-plt.plot(X_test, y_pred, color='red', label='Predicted Prices')
+# Plot the test data and the fitted line
+y_pred = scaler_y.inverse_transform(y_pred_standardized.reshape(-1, 1))
+plt.scatter(X_test, y_test, color='blue', label='Test data')
+plt.plot(X_test, y_pred, color='red', label='Fit line')
 
-plt.xlabel('Area (sq. ft)')
+# Add labels and title
+plt.xlabel('Area (feet^2)')
 plt.ylabel('Price (USD)')
-plt.title('House Price Prediction')
+plt.title('Test Data and Fit Line')
 plt.legend()
+
+# Show the plot
 plt.show()
 
 
-# %%
-print(y_pred_standardized.shape)
 # %%
