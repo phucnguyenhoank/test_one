@@ -2,7 +2,7 @@
 from sklearn.datasets import make_regression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import SGDRegressor
+from sklearn.linear_model import SGDRegressor, Lasso, Ridge, ElasticNet, LogisticRegression
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
@@ -18,7 +18,9 @@ X_test_scaled = x_train_scaler.transform(X_test)
 
 # %%
 model = SGDRegressor(learning_rate='constant', eta0=0.001)
-
+las_model = Lasso(alpha=0.1)
+ridge_model = Ridge(alpha=0.1)
+elas_model = ElasticNet(alpha=0.1, l1_ratio=0.5)
 mse_history = []
 max_iter = 1000
 for _ in range(max_iter):
@@ -49,4 +51,11 @@ print(result)
 
 # %%
 print(mse_history[10:15])
+# %%
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(X_train, y_train)
+ax.plot(X_train, model.predict(X_train_scaled), color='red')
+plt.show()
+
 # %%
